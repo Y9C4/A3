@@ -46,8 +46,7 @@ class TestTask2(TestCase):
         Hollow.gen_treasures = treasure_gen
 
         spooky_hollow: SpookyHollow = SpookyHollow()
-        self.assertEqual(len(spooky_hollow), len(treasures), f"Expected {len(
-            treasures)} treasures after restructuring your hollow you have {len(spooky_hollow)} treasures")
+        self.assertEqual(len(spooky_hollow), len(treasures), f"Expected {len(treasures)} treasures after restructuring your hollow you have {len(spooky_hollow)} treasures")
 
         results: List[Treasure] = []
         for n in range(num_treasures-1):
@@ -59,8 +58,7 @@ class TestTask2(TestCase):
         self.assertEqual(len(spooky_hollow), 0, "Expected all treasures to be removed from the hollow")
         for idx, student_result in enumerate(results):
             expected: Treasure = treasures[-(idx+1)]
-            self.assertEqual(student_result, expected, f"Issue with treasure #{
-                             idx + 1}:\nExpected {expected} but got {student_result}, it seems you have removed the wrong treasure")
+            self.assertEqual(student_result, expected, f"Issue with treasure #{idx + 1}:\nExpected {expected} but got {student_result}, it seems you have removed the wrong treasure")
 
     @number("2.3")
     @visibility(visibility.VISIBILITY_SHOW)

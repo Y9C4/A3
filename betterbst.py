@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 from typing import List, Tuple, TypeVar
-
-from data_structures.bst import BinarySearchTree
+from algorithms.mergesort import mergesort
+from data_structures.bst import BinarySearchTree, TreeNode
 
 K = TypeVar('K')
 I = TypeVar('I')
@@ -37,7 +37,8 @@ class BetterBST(BinarySearchTree[K, I]):
         Recall one of the drawbacks to using a binary search tree is that it can become unbalanced.
         If we know the elements ahead of time, we can sort them and then build a balanced tree.
         This will help us maintain the O(log n) complexity for searching, inserting, and deleting elements.
-
+        
+        This will be implemented using MergeSort, meaning it will be called recursivley.
         Args:
             elements (List[Tuple[K, I]]): The elements we wish to sort.
 
@@ -48,7 +49,7 @@ class BetterBST(BinarySearchTree[K, I]):
             Best Case Complexity: TODO
             Worst Case Complexity: TODO
         """
-        raise NotImplementedError
+        return mergesort(elements)
 
     def __build_balanced_tree(self, elements: List[Tuple[K, I]]) -> None:
         """
@@ -74,4 +75,14 @@ class BetterBST(BinarySearchTree[K, I]):
             Worst Case Complexity: O(n * log(n))
             where n is the number of elements in the list.
         """
-        raise NotImplementedError
+        def build_tree_rec(lo, hi):
+            if hi - lo < 1:
+                return
+            # Add median
+            mid = (hi + lo) // 2
+            key, value = elements[mid]
+            self[key] = value
+            build_tree_rec(lo, mid)
+            build_tree_rec(mid+1, hi)
+
+        build_tree_rec(0, len(elements))

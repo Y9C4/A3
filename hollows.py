@@ -12,7 +12,8 @@ from typing import List
 
 from config import Tiles
 from treasure import Treasure, generate_treasures
-from betterbst import BetterBST
+from betterbst import BetterBST, TreeNode
+from data_structures.heap import MaxHeap
 
 
 class Hollow(ABC):
@@ -88,12 +89,9 @@ class SpookyHollow(Hollow):
 
         for treasure in self.treasures:
             ratio = treasure.value / treasure.weight
-            weighted_treasures.append((ratio, ratio))
+            weighted_treasures.append((ratio, treasure))
 
         self.treasures = BetterBST(weighted_treasures)
-
-        print(self.treasures.draw())
-
 
     def get_optimal_treasure(self, backpack_capacity: int) -> Treasure | None:
         """
@@ -114,15 +112,41 @@ class SpookyHollow(Hollow):
         Complexity:
             (This is the actual complexity of your code, 
             remember to define all variables used.)
-            Best Case Complexity: TODO
-            Worst Case Complexity: TODO
+            Best Case Complexity: O(log(n))
+            Worst Case Complexity: unsure
+            n is the number of treasures in the hollow.
 
         Complexity requirements for full marks:
             Best Case Complexity: O(log(n))
             Worst Case Complexity: O(n)
             n is the number of treasures in the hollow 
         """
+        def search_optimal(node: TreeNode):
+            """ Helper function to search for the best treasure recursively. """
+            if node is None:
+                return None
+
+            treasure = node.item
+            if treasure.weight > backpack_capacity:
+                return search_optimal(node.left)
+
+            right_best = search_optimal(node.right)
+
+            if right_best is not None:
+                return right_best
+
+            return treasure
+
+        if self.treasures.is_empty():
+            return None
+
+        optimal_treasure = search_optimal(self.treasures.root)
+
+        if optimal_treasure is not None:
+            # Remove the optimal treasure from the hollow
+            self.treasures.__delitem__(optimal_treasure.value / optimal_treasure.weight)
         
+        return optimal_treasure
 
     def __str__(self) -> str:
         return Tiles.SPOOKY_HOLLOW.value
@@ -152,7 +176,15 @@ class MysticalHollow(Hollow):
             Worst Case Complexity: O(n)
             Where n is the number of treasures in the hollow
         """
-        raise NotImplementedError
+        weighted_treasures = []
+
+        for treasure in self.treasures:
+            ratio = treasure.value / treasure.weight
+            weighted_treasures.append((ratio, treasure))
+        
+        heap = MaxHeap(len(self.treasures))
+        heap = heap.heapify(weighted_treasures)
+        self.treasures = heap
 
     def get_optimal_treasure(self, backpack_capacity: int) -> Treasure | None:
         """
@@ -181,7 +213,30 @@ class MysticalHollow(Hollow):
             Worst Case Complexity: O(n log n)
             Where n is the number of treasures in the hollow
         """
-        raise NotImplementedError
+
+        if len(self.treasures) < 0:
+            return None
+
+        treasures_to_return = []  # Temporarily store treasures to put back into heap
+
+        # Find the first valid treasure that fits in the backpack
+        while len(self.treasures) > 0:
+            max_treasure = self.treasures.get_max()
+
+            if max_treasure[1].weight <= backpack_capacity:
+                # Found an optimal treasure, return it
+                for t in treasures_to_return:  # Return treasures temporarily removed
+                    self.treasures.add(t)
+                return max_treasure[1]
+            else:
+                treasures_to_return.append(max_treasure)  # Temporarily remove treasures
+
+        # No valid treasure found, put everything back
+        for t in treasures_to_return:
+            self.treasures.add(t)
+
+        return None
+    
 
     def __str__(self) -> str:
         return Tiles.MYSTICAL_HOLLOW.value

@@ -1,7 +1,11 @@
 from __future__ import annotations
 
 from typing import List, Tuple, TypeVar
+<<<<<<< HEAD
 
+=======
+from algorithms.mergesort import mergesort
+>>>>>>> ed9a9bb13ae0fade68f47e05c929e19549a44d96
 from data_structures.bst import BinarySearchTree, TreeNode
 
 K = TypeVar('K')
@@ -38,8 +42,12 @@ class BetterBST(BinarySearchTree[K, I]):
         If we know the elements ahead of time, we can sort them and then build a balanced tree.
         This will help us maintain the O(log n) complexity for searching, inserting, and deleting elements.
         
+<<<<<<< HEAD
         Implemented using MergeSort.
 
+=======
+        This will be implemented using MergeSort, meaning it will be called recursivley.
+>>>>>>> ed9a9bb13ae0fade68f47e05c929e19549a44d96
         Args:
             elements (List[Tuple[K, I]]): The elements we wish to sort.
 
@@ -50,6 +58,7 @@ class BetterBST(BinarySearchTree[K, I]):
             Best Case Complexity: O(n*log(n))
             Worst Case Complexity: O(n*log(n))
         """
+<<<<<<< HEAD
 
         if len(elements) <= 1:  # Base case: empty list or single element list
             return elements
@@ -78,6 +87,9 @@ class BetterBST(BinarySearchTree[K, I]):
             merged.extend(left[i:])
             merged.extend(right[j:])
             return merged
+=======
+        return mergesort(elements)
+>>>>>>> ed9a9bb13ae0fade68f47e05c929e19549a44d96
 
     def __build_balanced_tree(self, elements: List[Tuple[K, I]]) -> None:
         """
@@ -96,6 +108,7 @@ class BetterBST(BinarySearchTree[K, I]):
         Justification:
             The tree is built by recursively dividing the list into halves, leading to a balanced structure.
         """
+<<<<<<< HEAD
         # Base Case: stops when there are no more elements in the list
         if len(elements) < 1:
             return 
@@ -118,3 +131,16 @@ class BetterBST(BinarySearchTree[K, I]):
         # Build the left and right subtrees
         self.__build_balanced_tree(left)
         self.__build_balanced_tree(right)
+=======
+        def build_tree_rec(lo, hi):
+            if hi - lo < 1:
+                return
+            # Add median
+            mid = (hi + lo) // 2
+            key, value = elements[mid]
+            self[key] = value
+            build_tree_rec(lo, mid)
+            build_tree_rec(mid+1, hi)
+
+        build_tree_rec(0, len(elements))
+>>>>>>> ed9a9bb13ae0fade68f47e05c929e19549a44d96

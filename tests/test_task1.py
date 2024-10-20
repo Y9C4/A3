@@ -15,7 +15,6 @@ class TestTask1(TestCase):
         numbers: List[tuple[int, str]] = [(x, str(x)) for x in range(1, 17)]
         better_bst: BetterBST = BetterBST(numbers)
         self.assertEqual(len(better_bst), 16, "There should be 15 elements in the bst")
-
         self.assertEqual(better_bst.get_minimal(better_bst.root).key, 1, f"Expected 1 as the minimal key got {better_bst.get_minimal(better_bst.root)}")
         self.assertEqual(better_bst.get_maximal(better_bst.root).key, 16, f"Expected 16 as the maximal key got {better_bst.get_maximal(better_bst.root)}")
 
@@ -43,5 +42,4 @@ class TestTask1(TestCase):
                               27498797, 16228428, 13405296, 16604570, 24732332, 26675257, 18101333, 21295517, 15406486, 20504994, 5417150, 2550562, 19789429, 26821312, 14283105, 1523316, 815628, 22664586, 11186756, 2891723, 24207674, 23283113, 13113168]
         numbers: List[Tuple[int, str]] = [(x, str(x)) for x in numbers]
         better_bst = BetterBST(numbers)
-
         self.assertEqual(better_bst.is_balanced(), True, "The tree should be balanced")

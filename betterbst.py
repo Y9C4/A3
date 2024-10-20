@@ -1,11 +1,7 @@
 from __future__ import annotations
 
 from typing import List, Tuple, TypeVar
-<<<<<<< HEAD
-
-=======
 from algorithms.mergesort import mergesort
->>>>>>> ed9a9bb13ae0fade68f47e05c929e19549a44d96
 from data_structures.bst import BinarySearchTree, TreeNode
 
 K = TypeVar('K')
@@ -42,12 +38,7 @@ class BetterBST(BinarySearchTree[K, I]):
         If we know the elements ahead of time, we can sort them and then build a balanced tree.
         This will help us maintain the O(log n) complexity for searching, inserting, and deleting elements.
         
-<<<<<<< HEAD
-        Implemented using MergeSort.
-
-=======
         This will be implemented using MergeSort, meaning it will be called recursivley.
->>>>>>> ed9a9bb13ae0fade68f47e05c929e19549a44d96
         Args:
             elements (List[Tuple[K, I]]): The elements we wish to sort.
 
@@ -58,38 +49,7 @@ class BetterBST(BinarySearchTree[K, I]):
             Best Case Complexity: O(n*log(n))
             Worst Case Complexity: O(n*log(n))
         """
-<<<<<<< HEAD
-
-        if len(elements) <= 1:  # Base case: empty list or single element list
-            return elements
-
-        # Step 1: Divide the list into two halves
-        mid = len(elements) // 2
-        left = self.__sort_elements(elements[:mid])  # Sort left half
-        right = self.__sort_elements(elements[mid:])  # Sort right half
-
-        # Step 2: Merge the sorted halves
-        return self.__merge(left, right)
-    
-    def __merge(self, left: List[Tuple[K, I]], right: List[Tuple[K, I]]) -> List[Tuple[K, I]]:
-            merged = []
-            i = 0
-            j = 0
-
-            while i < len(left) and j < len(right):
-                if left[i][0] <= right[j][0]:
-                    merged.append(left[i])
-                    i += 1
-                else:
-                    merged.append(right[j])
-                    j += 1
-
-            merged.extend(left[i:])
-            merged.extend(right[j:])
-            return merged
-=======
         return mergesort(elements)
->>>>>>> ed9a9bb13ae0fade68f47e05c929e19549a44d96
 
     def __build_balanced_tree(self, elements: List[Tuple[K, I]]) -> None:
         """
@@ -108,30 +68,6 @@ class BetterBST(BinarySearchTree[K, I]):
         Justification:
             The tree is built by recursively dividing the list into halves, leading to a balanced structure.
         """
-<<<<<<< HEAD
-        # Base Case: stops when there are no more elements in the list
-        if len(elements) < 1:
-            return 
-
-        # Step 1: Find the median
-        mid = len(elements) // 2
-        median = elements[mid]
-
-        # Step 2: Insert the median into the tree
-        if self.root is None:
-            print(len(elements))
-            self.root = TreeNode(median[0], median[1])  # Initialize the root
-        else:
-            self.insert_aux(self.root, median[0], median[1], self.root.depth)  # Insert using the insertion logic
-
-        # Step 3: Recursively build left and right subtrees
-        left = elements[:mid]  # Left half of the elements
-        right = elements[mid + 1:]  # Right half of the elements, skipping the median
-
-        # Build the left and right subtrees
-        self.__build_balanced_tree(left)
-        self.__build_balanced_tree(right)
-=======
         def build_tree_rec(lo, hi):
             if hi - lo < 1:
                 return
@@ -143,4 +79,3 @@ class BetterBST(BinarySearchTree[K, I]):
             build_tree_rec(mid+1, hi)
 
         build_tree_rec(0, len(elements))
->>>>>>> ed9a9bb13ae0fade68f47e05c929e19549a44d96

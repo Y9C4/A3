@@ -6,6 +6,7 @@ from typing import List, Tuple
 from config import Directions, Tiles
 from hollows import Hollow, MysticalHollow, SpookyHollow
 from treasure import Treasure
+from data_structures.linked_stack import LinkedStack
 
 
 class Position:
@@ -200,7 +201,13 @@ class Maze:
             Best Case Complexity: TODO
             Worst Case Complexity: TODO
         """
-        raise NotImplementedError
+        if 0 <= position.row < self.rows and 0 <= position.col < self.cols:
+            tile_value = self.grid[position.row][position.col].tile
+            if tile_value == Tiles.WALL.value:
+                return False
+            else:
+                return True
+        return False
 
     def get_available_positions(self, current_position: Position) -> List[Position]:
         """
@@ -216,9 +223,16 @@ class Maze:
             Best Case Complexity: TODO
             Worst Case Complexity: TODO
         """
+        available_positions = []
 
-        raise NotImplementedError
-
+        # Iterate through each direction in the enum class
+        for direction in Maze.directions:
+            row_change, col_change = self.directions[direction]
+            new_position = Position(current_position.row + row_change, current_position.col + col_change)
+            if self.is_valid_position(new_position):
+                available_positions.append(new_position)
+        return available_positions
+        
     def find_way_out(self) -> List[Position] | None:
         """
         Finds a way out of the maze in some cases there may be multiple exits
@@ -236,7 +250,28 @@ class Maze:
             Worst Case Complexity: TODO
         """
         start: Position = self.start_position
-        raise NotImplementedError
+        stack = LinkedStack()
+        path = []  # To store the path to the exit
+
+        # Push the start position onto the stack and mark it as visited
+        stack.push(start)
+        self.grid[start.row][start.col].visited = True
+
+        while not stack.is_empty():
+            current_position = stack.pop() #return the tile currently being searched in dfs
+            path.append(current_position) 
+            if self.grid[current_position.row][current_position.col].tile == Tiles.EXIT.value: #check if the current tile is an exit
+                return path
+
+            neighbors = self.get_available_positions(current_position) #get all the adjacent tiles / child nodes of the current tile
+            for neighbor in neighbors:
+                if not self.grid[neighbor.row][neighbor.col].visited: #check if the neighbouring tile has already been visited
+                    self.grid[neighbor.row][neighbor.col].visited = True
+                    stack.push(neighbor)
+
+            if len(neighbors) == 0:
+                path.pop()
+        return None
 
     def take_treasures(self, path: List[MazeCell], backpack_capacity: int) -> List[Treasure]:
         """
@@ -261,7 +296,33 @@ class Maze:
             Worst Case Complexity: TODO
 
         """
-        raise NotImplementedError
+        treasures = []
+        total_weight = 0
+
+        for tile in path:
+            remaining_capacity = backpack_capacity - total_weight
+            #print(f"remaining capacity: {remaining_capacity}")
+
+            if remaining_capacity <= 0:
+                break
+                        
+            if type(tile.tile) == SpookyHollow:
+                optimal_treasure = SpookyHollow.get_optimal_treasure(tile.tile, remaining_capacity)
+            elif type(tile.tile) == MysticalHollow:
+                optimal_treasure = MysticalHollow.get_optimal_treasure(tile.tile, remaining_capacity)
+            else:
+                continue
+
+            if optimal_treasure:
+                if optimal_treasure.weight <= remaining_capacity:
+                    treasures.append(optimal_treasure)
+                    total_weight += optimal_treasure.weight
+
+        if len(treasures) == 0:
+            return None
+
+        return treasures
+
 
     def __repr__(self) -> str:
         return str(self)
